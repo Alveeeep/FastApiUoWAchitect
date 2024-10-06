@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:16
+    container_name: db_app
+    command: -p 5455
+    expose:
+      - 5455
+    env_file:
+      - .env-non-dev
+    volumes:
+      - pgdata:/data/pgdata
+    restart: always
+
+  app:
+    build:
+      context: .
+    env_file:
+      - .env-non-dev
+    container_name: fastapi
+    command: ["/fastapi_kitties/docker/app.sh"]
+    ports:
+      - 7667:8000
+    depends_on:
+      - db
+    restart: always
+
+volumes:
+  pgdata:
